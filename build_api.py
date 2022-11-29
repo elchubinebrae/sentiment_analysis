@@ -46,7 +46,7 @@ def get_home_page_text(site):
 #çonnects to google Natural Language API and performs sentiment analysis
 #return a string fragment with a score and magnitude
 def show_sentiment_scores(input_text):
-
+    initiate_client()
     document = language_v1.Document(
         content=input_text, type_=language_v1.Document.Type.PLAIN_TEXT
     )
@@ -55,10 +55,14 @@ def show_sentiment_scores(input_text):
     sentiment = client.analyze_sentiment(
         request={"document": document}
     ).document_sentiment
-
+    scores =[]
+    magnitude = []
     #print("Text: {}".format(text))
-    print(f'sentiment analysis for: {input_text}')
-    print("Sentiment: {}, {}".format(sentiment.score, sentiment.magnitude))
+
+    scores.append(sentiment.score)
+    magnitude.append(sentiment.magnitude)
+    df = pd.DataFrame(list(zip(scores,magnitude)),columns=["Score", "Magnitude"])
+    return df
 
 
 #function that gives a dataframe with sentiment scores and magnitude as

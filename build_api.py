@@ -104,5 +104,22 @@ def url_to_df(url):
     df = pd.DataFrame(list(zip(analysed_text,sentiment_score,sentiment_magnitude)),columns=["Text", "Score", "Magnitude"])
     return df
 
-data = url_to_df("https://www.topchefknives.co.uk")
-print(data)
+def return_df_from_url_sentiment(url):
+    '''
+    Take a URL as a parameter teh performs sentiment analysis on each sentence for the text on the page.
+    Dataframe returned is grouped by the Three types of sentiment. Use "Count" columns for graph making purposes.
+    
+    '''
+    data = url_to_df(url)
+    data['Sentiment'] = ""
+    data['Count'] = 1
+    for num, thing in enumerate(data.Score):
+        if thing <= -0.25:
+            data.Sentiment[num] = "Low"
+        elif thing > -0.25 and thing <= 0.25:
+            data.Sentiment[num] = "Moderate"
+        else:
+            data.Sentiment[num] = "High"
+    data = data.groupby(by="Sentiment").sum()
+    return data
+
